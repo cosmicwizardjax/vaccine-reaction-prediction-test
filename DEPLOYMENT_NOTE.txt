@@ -1,0 +1,4 @@
+Deployment fix applied:
+- Replaced the Git LFS pointer in reaction_model.pkl with the actual trained model file.
+- Pinned scikit-learn to 1.9.0 to match the model's training version and avoid ColumnTransformer compatibility errors.
+- The app's loader prefers reaction_model.pkl and does not require CatBoost for this model.
