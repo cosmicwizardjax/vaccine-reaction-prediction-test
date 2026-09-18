@@ -21,6 +21,10 @@ METADATA_FILE = BASE_DIR / "model_metadata.pkl"
 DATA_FILE = BASE_DIR / "data" / "final ugrc(1).xlsx"
 SHEET_NAME = "compiled data all"
 
+HF_REPO_ID = "Jax-J/vaccine-reaction-model-test"
+HF_MODEL_FILENAME = "reaction_model.pkl"
+
+
 OTHER_LABEL = "OTHER REPORTED REACTION (PRESENT IN DATASET)"
 TOP_N_REACTIONS = 3
 
@@ -94,12 +98,15 @@ st.markdown(
 def load_model_and_metadata():
     metadata = joblib.load(METADATA_FILE)
 
-    # Prefer the model file that is actually present in the repository.
-    # This makes the app work on Streamlit Cloud even when the optional
-    # CatBoost .cbm file is not uploaded.
-    if MODEL_PKL_FILE.exists():
-        model = joblib.load(MODEL_PKL_FILE)
-        return model, metadata
+    model_path = hf_hub_download(
+        repo_id=HF_REPO_ID,
+        filename=HF_MODEL_FILENAME,
+        repo_type="model",
+    )
+
+    model = joblib.load(model_path)
+
+    return model, metadata
 
     if MODEL_CBM_FILE.exists():
         if not CATBOOST_AVAILABLE:
